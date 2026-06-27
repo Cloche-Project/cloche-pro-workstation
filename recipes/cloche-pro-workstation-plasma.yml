@@ -1,0 +1,66 @@
+name: cloche-pro-workstation-plasma
+description: "Cloche PRO Workstation (PLASMA)"
+
+base-image: ghcr.io/cloche-project/cloche-pro
+image-version: latest
+
+modules:
+
+  - type: os-release
+    properties:
+      #ID: cloche-pro
+      NAME: Cloche PRO Workstation
+      PRETTY_NAME: Cloche PRO 10 
+      HOME_URL: https://github.com/augustofmarques/cloche
+      BUG_REPORT_URL: https://github.com/augustofmarques/cloche/issues
+      SUPPORT_URL: https://github.com/augustofmarques/cloche
+      DEFAULT_HOSTNAME: cloche
+
+  #tuned-ppd has been removed from the second RUN dnf install due to a known SELinux bug dealing with tuned-ppd specifically.
+  - type: containerfile
+    snippets:
+      - RUN dnf install -y --allowerasing @KDE --exclude=plasma-workspace-wallpapers && dnf clean all
+      - |
+        RUN dnf install -y --allowerasing --nobest \
+          tuned \
+          cockpit \
+          git \
+          distrobox \
+          btop \
+          plymouth-plugin-script && \
+          dnf clean all
+      - RUN mkdir -p /etc/flatpak/remotes.d && curl -L https://dl.flathub.org/repo/flathub.flatpakrepo -o /etc/flatpak/remotes.d/flathub.flatpakrepo
+      - "RUN echo '%wheel ALL=(ALL) NOPASSWD: /usr/bin/bootc' > /etc/sudoers.d/99-bootc-nopasswd"
+      - "RUN chmod 0440 /etc/sudoers.d/99-bootc-nopasswd"
+      - RUN glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+  - type: files
+    files:
+      - source: system/usr
+        destination: /usr
+      - source: system/etc
+        destination: /etc
+
+  #- type: script
+    #scripts:
+      #- setup-cloche-pro-plasma.sh
+
+  - type: kargs
+    kargs:
+      - nowatchdog
+      - random.trust_cpu=on
+      - console=tty0
+      - quiet
+      - splash
+      - rhgb
+      - rd.udev.log_priority=3
+      - vt.global_cursor_default=0
+      - systemd.show_status=auto
+
+  - type: systemd
+    system:
+      enabled:
+        #- sddm.service
+        - NetworkManager.service
+        - first-boot-flatpaks.service
+        - tuned.service

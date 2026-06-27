@@ -1,0 +1,83 @@
+name: cloche-pro-workstation-gnome
+description: "Cloche PRO Workstation (GNOME)"
+
+base-image: ghcr.io/cloche-project/cloche-pro
+image-version: latest
+
+modules:
+
+  - type: os-release
+    properties:
+      #ID: cloche-pro
+      NAME: Cloche PRO Workstation
+      PRETTY_NAME: Cloche PRO 10 
+      HOME_URL: https://github.com/augustofmarques/cloche
+      BUG_REPORT_URL: https://github.com/augustofmarques/cloche/issues
+      SUPPORT_URL: https://github.com/augustofmarques/cloche
+      DEFAULT_HOSTNAME: cloche
+
+  #tuned-ppd has been removed from the second RUN dnf install due to a known SELinux bug dealing with tuned-ppd specifically.
+  - type: containerfile
+    snippets:
+      - RUN dnf install -y --allowerasing @workstation --exclude=gnome-software --exclude=centos-backgrounds && dnf clean all
+      - |
+        RUN dnf install -y --allowerasing --nobest \
+          tuned \
+          gdm \
+          cockpit \
+          git \
+          distrobox \
+          btop \
+          gnome-shell-extension-apps-menu \
+          gnome-shell-extension-auto-move-windows \
+          gnome-shell-extension-dash-to-dock \
+          gnome-shell-extension-desktop-icons \
+          gnome-shell-extension-drive-menu \
+          gnome-shell-extension-launch-new-instance \
+          gnome-shell-extension-native-window-placement \
+          gnome-shell-extension-places-menu \
+          gnome-shell-extension-screenshot-window-sizer \
+          gnome-shell-extension-user-theme \
+          gnome-shell-extension-window-list \
+          gnome-shell-extension-windowsNavigator \
+          gnome-shell-extension-workspace-indicator \
+          gnome-shell-extension-dash-to-panel \
+          gnome-shell-extension-blur-my-shell \
+          gnome-shell-extension-caffeine \
+          plymouth-plugin-script && \
+          dnf clean all
+      - RUN mkdir -p /etc/flatpak/remotes.d && curl -L https://dl.flathub.org/repo/flathub.flatpakrepo -o /etc/flatpak/remotes.d/flathub.flatpakrepo
+      - "RUN echo '%wheel ALL=(ALL) NOPASSWD: /usr/bin/bootc' > /etc/sudoers.d/99-bootc-nopasswd"
+      - "RUN chmod 0440 /etc/sudoers.d/99-bootc-nopasswd"
+      - RUN glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+  - type: files
+    files:
+      - source: system/usr
+        destination: /usr
+      - source: system/etc
+        destination: /etc
+
+  - type: script
+    scripts:
+      - setup-cloche-pro-gnome.sh
+
+  - type: kargs
+    kargs:
+      - nowatchdog
+      - random.trust_cpu=on
+      - console=tty0
+      - quiet
+      - splash
+      - rhgb
+      - rd.udev.log_priority=3
+      - vt.global_cursor_default=0
+      - systemd.show_status=auto
+
+  - type: systemd
+    system:
+      enabled:
+        - gdm.service
+        - NetworkManager.service
+        - first-boot-flatpaks.service
+        - tuned.service

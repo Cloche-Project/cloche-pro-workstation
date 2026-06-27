@@ -25,7 +25,7 @@ jobs:
             ghcr.io/augustofmarques/cloche-enterprise:latest
 
       - name: Upload ISO
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cloche-enterprise-iso
           path: ./output/*.iso

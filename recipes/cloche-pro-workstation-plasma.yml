@@ -27,6 +27,7 @@ modules:
           git \
           distrobox \
           btop \
+          newt \
           plymouth-plugin-script && \
           dnf clean all
       - RUN mkdir -p /etc/flatpak/remotes.d && curl -L https://dl.flathub.org/repo/flathub.flatpakrepo -o /etc/flatpak/remotes.d/flathub.flatpakrepo

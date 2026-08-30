@@ -28,12 +28,14 @@ modules:
           distrobox \
           btop \
           newt \
+          zsh \
           plymouth-plugin-script && \
           dnf clean all
       - RUN mkdir -p /etc/flatpak/remotes.d && curl -L https://dl.flathub.org/repo/flathub.flatpakrepo -o /etc/flatpak/remotes.d/flathub.flatpakrepo
       - "RUN echo '%wheel ALL=(ALL) NOPASSWD: /usr/bin/bootc' > /etc/sudoers.d/99-bootc-nopasswd"
       - "RUN chmod 0440 /etc/sudoers.d/99-bootc-nopasswd"
       - RUN glib-compile-schemas /usr/share/glib-2.0/schemas/
+      - RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes
 
   - type: files
     files:

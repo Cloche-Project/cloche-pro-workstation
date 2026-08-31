@@ -52,7 +52,7 @@ modules:
       - "RUN echo '%wheel ALL=(ALL) NOPASSWD: /usr/bin/bootc' > /etc/sudoers.d/99-bootc-nopasswd"
       - "RUN chmod 0440 /etc/sudoers.d/99-bootc-nopasswd"
       - RUN glib-compile-schemas /usr/share/glib-2.0/schemas/
-      - RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes
+      - RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes --bin-dir /usr/bin
 
   - type: files
     files:

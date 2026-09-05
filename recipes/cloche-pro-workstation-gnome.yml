@@ -49,6 +49,18 @@ modules:
           plymouth-plugin-script && \
           dnf clean all
       - RUN mkdir -p /etc/flatpak/remotes.d && curl -L https://dl.flathub.org/repo/flathub.flatpakrepo -o /etc/flatpak/remotes.d/flathub.flatpakrepo
+      - |
+        RUN cat > /etc/yum.repos.d/cloche-pro-rpm.repo << 'EOF'
+        [cloche]
+        name=Cloche Pro RPM Repository
+        baseurl=https://cloche-project.github.io/rpm-repo/cloche-pro/$releasever/$basearch/
+        enabled=1
+        gpgcheck=1
+        gpgkey=https://cloche-project.github.io/rpm-repo/RPM-GPG-KEY-cloche
+        repo_gpgcheck=0
+        metadata_expire=3600
+        EOF
+      - RUN dnf install -y cloche-gnome-defaults && dnf clean all
       - "RUN echo '%wheel ALL=(ALL) NOPASSWD: /usr/bin/bootc' > /etc/sudoers.d/99-bootc-nopasswd"
       - "RUN chmod 0440 /etc/sudoers.d/99-bootc-nopasswd"
       - RUN glib-compile-schemas /usr/share/glib-2.0/schemas/

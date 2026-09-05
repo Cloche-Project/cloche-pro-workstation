@@ -30,6 +30,7 @@ modules:
           btop \
           newt \
           zsh \
+          firefox \
           gnome-shell-extension-apps-menu \
           gnome-shell-extension-auto-move-windows \
           gnome-shell-extension-dash-to-dock \

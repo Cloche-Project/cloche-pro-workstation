@@ -19,7 +19,7 @@ modules:
   #tuned-ppd has been removed from the second RUN dnf install due to a known SELinux bug dealing with tuned-ppd specifically.
   - type: containerfile
     snippets:
-      - RUN dnf install -y --allowerasing @workstation --exclude=gnome-software --exclude=centos-backgrounds && dnf clean all
+      - RUN dnf install -y --allowerasing --skip-broken @workstation --exclude=gnome-software --exclude=centos-backgrounds && dnf clean all
       - |
         RUN dnf install -y --allowerasing --nobest \
           tuned \

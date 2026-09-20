@@ -30,6 +30,8 @@ modules:
           newt \
           zsh \
           firefox \
+          spice-vdagent \
+          qemu-guest-agent \
           plymouth-plugin-script && \
           dnf clean all
       - RUN ln -sf /usr/share/applications/firefox.desktop /usr/share/applications/org.mozilla.firefox.desktop

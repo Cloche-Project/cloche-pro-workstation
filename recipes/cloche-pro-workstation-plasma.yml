@@ -19,9 +19,9 @@ modules:
   #tuned-ppd has been removed from the second RUN dnf install due to a known SELinux bug dealing with tuned-ppd specifically.
   - type: containerfile
     snippets:
-      - RUN dnf install -y --allowerasing @KDE --exclude=plasma-workspace-wallpapers && dnf clean all
+      - RUN dnf install -y --allowerasing @KDE --exclude=plasma-workspace-wallpapers --exclude=plasma-discover --exclude=plasma-discover-notifier && dnf clean all
       - |
-        RUN dnf install -y --allowerasing --nobest \
+        RUN dnf install -y --allowerasing --nobest --exclude=tuned-ppd \
           tuned \
           cockpit \
           git \

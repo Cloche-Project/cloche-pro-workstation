@@ -21,7 +21,7 @@ modules:
     snippets:
       - RUN dnf install -y --allowerasing --skip-broken @workstation --exclude=gnome-software --exclude=centos-backgrounds && dnf clean all
       - |
-        RUN dnf install -y --allowerasing --nobest \
+        RUN dnf install -y --allowerasing --nobest --exclude=tuned-ppd \
           tuned \
           gdm \
           cockpit \

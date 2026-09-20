@@ -10,7 +10,7 @@ modules:
     properties:
       #ID: cloche-pro
       NAME: Cloche PRO Workstation
-      PRETTY_NAME: Cloche PRO 10 
+      PRETTY_NAME: Cloche PRO 10 (Lunar Slate)
       HOME_URL: https://github.com/augustofmarques/cloche
       BUG_REPORT_URL: https://github.com/augustofmarques/cloche/issues
       SUPPORT_URL: https://github.com/augustofmarques/cloche
@@ -49,6 +49,7 @@ modules:
           gnome-shell-extension-caffeine \
           plymouth-plugin-script && \
           dnf clean all
+      - RUN ln -sf /usr/share/applications/firefox.desktop /usr/share/applications/org.mozilla.firefox.desktop
       - RUN mkdir -p /etc/flatpak/remotes.d && curl -L https://dl.flathub.org/repo/flathub.flatpakrepo -o /etc/flatpak/remotes.d/flathub.flatpakrepo
       - |
         RUN cat > /etc/yum.repos.d/cloche-pro-rpm.repo << 'EOF'
@@ -61,7 +62,7 @@ modules:
         repo_gpgcheck=0
         metadata_expire=3600
         EOF
-      - RUN dnf install -y cloche-gnome-defaults && dnf clean all
+      - RUN dnf install -y cloche-gnome-defaults bazaar && dnf clean all
       - "RUN echo '%wheel ALL=(ALL) NOPASSWD: /usr/bin/bootc' > /etc/sudoers.d/99-bootc-nopasswd"
       - "RUN chmod 0440 /etc/sudoers.d/99-bootc-nopasswd"
       - RUN glib-compile-schemas /usr/share/glib-2.0/schemas/

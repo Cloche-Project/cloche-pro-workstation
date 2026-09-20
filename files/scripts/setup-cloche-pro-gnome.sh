@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
+set -eoux pipefail
 
-echo 'setup cloche pro'
+fc-cache -f
+update-desktop-database /usr/share/applications

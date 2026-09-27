@@ -51,7 +51,8 @@ modules:
           gnome-shell-extension-dash-to-panel \
           gnome-shell-extension-blur-my-shell \
           gnome-shell-extension-caffeine \
-          plymouth-plugin-script && \
+          plymouth-plugin-script \
+          uxplay && \
           dnf clean all
       #CentOS Stream 10's spice-vdagent (0.22.1) predates the upstream switch to wiring its user
       #service into graphical-session.target by default (Fedora's 0.23.0 already does this) — the
@@ -87,6 +88,8 @@ modules:
         destination: /usr
       - source: system/etc
         destination: /etc
+
+  - type: justfiles
 
   - type: script
     scripts:

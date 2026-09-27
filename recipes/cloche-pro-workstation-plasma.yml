@@ -34,7 +34,8 @@ modules:
           firefox \
           spice-vdagent \
           qemu-guest-agent \
-          plymouth-plugin-script && \
+          plymouth-plugin-script \
+          uxplay && \
           dnf clean all
       #CentOS Stream 10's spice-vdagent (0.22.1) predates the upstream switch to wiring its user
       #service into graphical-session.target by default (Fedora's 0.23.0 already does this) — the
@@ -57,7 +58,7 @@ modules:
         repo_gpgcheck=0
         metadata_expire=3600
         EOF
-      - RUN dnf install -y cloche-kde-defaults && dnf clean all
+      - RUN dnf install -y cloche-kde-defaults plasma-applet-appgrid && dnf clean all
       - "RUN echo '%wheel ALL=(ALL) NOPASSWD: /usr/bin/bootc' > /etc/sudoers.d/99-bootc-nopasswd"
       - "RUN chmod 0440 /etc/sudoers.d/99-bootc-nopasswd"
       - RUN glib-compile-schemas /usr/share/glib-2.0/schemas/
@@ -69,6 +70,8 @@ modules:
         destination: /usr
       - source: system/etc
         destination: /etc
+
+  - type: justfiles
 
   - type: containerfile
     snippets:

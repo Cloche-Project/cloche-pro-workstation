@@ -89,8 +89,6 @@ modules:
       - source: system/etc
         destination: /etc
 
-  - type: justfiles
-
   - type: script
     scripts:
       - setup-cloche-pro-gnome.sh

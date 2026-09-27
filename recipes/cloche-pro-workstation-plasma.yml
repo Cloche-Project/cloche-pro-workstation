@@ -71,8 +71,6 @@ modules:
       - source: system/etc
         destination: /etc
 
-  - type: justfiles
-
   - type: containerfile
     snippets:
       - RUN fc-cache -f && update-desktop-database /usr/share/applications

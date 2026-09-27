@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Enable UxPlay (AirPlay mirroring receiver) as a user service.
+# Upstream explicitly recommends against running it as a root/system
+# service, so this wires it up under the logged-in user's session instead.
+#
+# cloche-pro-workstation isn't built on a ublue-os base image, so it has no
+# ujust/60-custom.just scaffolding to hook into (unlike cloche-standard and
+# cloche-xe, where "ujust enable-uxplay" does the same thing). This plain
+# script is the equivalent entry point here.
+set -euo pipefail
+
+mkdir -p ~/.config/systemd/user
+cat > ~/.config/systemd/user/uxplay.service <<'EOF'
+[Unit]
+Description=AirPlay Unix mirroring server
+
+[Service]
+Type=simple
+ExecStart=uxplay
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+EOF
+
+systemctl --user daemon-reload
+systemctl --user enable --now uxplay.service
+echo "UxPlay enabled. Your device should now show up as an AirPlay receiver on the local network."
+echo "Check status with: systemctl --user status uxplay.service"

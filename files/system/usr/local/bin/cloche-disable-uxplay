@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Disable and remove the UxPlay user service. See cloche-enable-uxplay.
+set -euo pipefail
+
+systemctl --user disable --now uxplay.service 2>/dev/null || true
+rm -f ~/.config/systemd/user/uxplay.service
+systemctl --user daemon-reload
+echo "UxPlay service disabled and removed."

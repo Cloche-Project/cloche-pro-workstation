@@ -59,6 +59,13 @@ modules:
         metadata_expire=3600
         EOF
       - RUN dnf install -y cloche-kde-defaults plasma-applet-appgrid && dnf clean all
+      # The Plasma greeter (plasmalogin/sddm's breeze theme) reads its background from
+      # /usr/share/backgrounds/default.png regardless of any per-user Plasma config, so without
+      # this it shows whatever CentOS/KDE's stock wallpaper package left there instead of Cloche's.
+      - |
+        RUN rm -f /usr/share/backgrounds/default.png /usr/share/backgrounds/default-dark.png && \
+          ln -sf /usr/share/wallpapers/Cloche-Default/contents/images/3840x2025.webp /usr/share/backgrounds/default.png && \
+          ln -sf /usr/share/wallpapers/Cloche-Default/contents/images/3840x2025-dark.webp /usr/share/backgrounds/default-dark.png
       - "RUN echo '%wheel ALL=(ALL) NOPASSWD: /usr/bin/bootc' > /etc/sudoers.d/99-bootc-nopasswd"
       - "RUN chmod 0440 /etc/sudoers.d/99-bootc-nopasswd"
       - RUN glib-compile-schemas /usr/share/glib-2.0/schemas/

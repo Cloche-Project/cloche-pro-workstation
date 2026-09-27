@@ -16,10 +16,12 @@ modules:
       SUPPORT_URL: https://github.com/augustofmarques/cloche
       DEFAULT_HOSTNAME: cloche
 
-  #tuned-ppd has been removed from the second RUN dnf install due to a known SELinux bug dealing with tuned-ppd specifically.
+  #tuned-ppd is excluded due to a known SELinux bug. It must be excluded from BOTH installs below:
+  #powerdevil (pulled in by @KDE) Recommends tuned-ppd, so it sneaks back in during the @KDE
+  #install even though the later `tuned` install already excludes it.
   - type: containerfile
     snippets:
-      - RUN dnf install -y --allowerasing @KDE --exclude=plasma-workspace-wallpapers --exclude=plasma-discover --exclude=plasma-discover-notifier && dnf clean all
+      - RUN dnf install -y --allowerasing @KDE --exclude=plasma-workspace-wallpapers --exclude=plasma-discover --exclude=plasma-discover-notifier --exclude=tuned-ppd && dnf clean all
       - |
         RUN dnf install -y --allowerasing --nobest --exclude=tuned-ppd \
           tuned \
@@ -34,6 +36,14 @@ modules:
           qemu-guest-agent \
           plymouth-plugin-script && \
           dnf clean all
+      #CentOS Stream 10's spice-vdagent (0.22.1) predates the upstream switch to wiring its user
+      #service into graphical-session.target by default (Fedora's 0.23.0 already does this) — the
+      #older build only wants it from plasma-core.target, with no ordering guarantee against the
+      #compositor being ready, which is why guest->host clipboard is unreliable. Replicate what the
+      #newer package does automatically until CentOS/EPEL catches up.
+      - |
+        RUN mkdir -p /usr/lib/systemd/user/graphical-session.target.wants && \
+          ln -sf ../spice-vdagent.service /usr/lib/systemd/user/graphical-session.target.wants/spice-vdagent.service
       - RUN ln -sf /usr/share/applications/firefox.desktop /usr/share/applications/org.mozilla.firefox.desktop
       - RUN mkdir -p /etc/flatpak/remotes.d && curl -L https://dl.flathub.org/repo/flathub.flatpakrepo -o /etc/flatpak/remotes.d/flathub.flatpakrepo
       - |
